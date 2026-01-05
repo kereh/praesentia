@@ -1,12 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { login } from "@/actions/auth/login";
+import { registrasi } from "@/actions/auth/registrasi";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -24,9 +23,12 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { type LoginSchema, loginSchema } from "@/schemas/schema-login";
+import {
+	type RegistrasiSchema,
+	registrasiSchema,
+} from "@/schemas/schema-registrasi";
 
-export function LoginForm({
+export function RegistrasiForm({
 	className,
 	...props
 }: React.ComponentProps<"div">) {
@@ -36,30 +38,34 @@ export function LoginForm({
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm<LoginSchema>({
-		resolver: zodResolver(loginSchema),
+	} = useForm<RegistrasiSchema>({
+		resolver: zodResolver(registrasiSchema),
 		defaultValues: {
+			name: "",
+			nim: "",
 			email: "",
 			password: "",
+			confirmPassword: "",
 		},
 	});
 
 	const onSubmit = useCallback(
-		async (data: LoginSchema) => {
-			const loginPromise = login(data).then((result) => {
+		async (data: RegistrasiSchema) => {
+			const registrasiPromise = registrasi(data).then((result) => {
 				if (!result.success) throw new Error(result.error);
-				return router.refresh();
+
+				return router.push("/login");
 			});
 
-			toast.promise(loginPromise, {
-				loading: "Login sedang diproses...",
+			toast.promise(registrasiPromise, {
+				loading: "Registrasi sedang diproses...",
 				position: "top-center",
-				success: "Login berhasil!",
+				success: "Registrasi berhasil!",
 				duration: 2000,
 				error: (err: Error) => err.message,
 			});
 
-			return loginPromise;
+			return registrasiPromise;
 		},
 		[router],
 	);
@@ -68,48 +74,76 @@ export function LoginForm({
 		<div className={cn("flex flex-col gap-6", className)} {...props}>
 			<Card>
 				<CardHeader className="text-center">
-					<CardTitle className="text-xl">Selamat Datang</CardTitle>
+					<CardTitle className="text-xl">Buat Akun Baru</CardTitle>
 					<CardDescription>
-						Login menggunakan email dan password
+						Daftar menggunakan email dan password
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<FieldGroup>
 							{errors.root && <FieldError>{errors.root.message}</FieldError>}
+							<Field data-invalid={!!errors.name}>
+								<FieldLabel htmlFor="name">Nama Lengkap</FieldLabel>
+								<Input
+									id="name"
+									placeholder=""
+									type="text"
+									{...register("name")}
+									disabled={isSubmitting}
+								/>
+								<FieldError>{errors.name?.message}</FieldError>
+							</Field>
+							<Field data-invalid={!!errors.nim}>
+								<FieldLabel htmlFor="nim">Nomor Induk Mahasiswa</FieldLabel>
+								<Input
+									id="nim"
+									placeholder="8 Digit NIM"
+									type="text"
+									{...register("nim")}
+									disabled={isSubmitting}
+								/>
+								<FieldError>{errors.name?.message}</FieldError>
+							</Field>
 							<Field data-invalid={!!errors.email}>
 								<FieldLabel htmlFor="email">Email</FieldLabel>
 								<Input
 									id="email"
-									placeholder="m@example.com"
+									placeholder="mybini@carbeat.com"
 									type="email"
 									{...register("email")}
+									disabled={isSubmitting}
 								/>
 								<FieldError>{errors.email?.message}</FieldError>
 							</Field>
 							<Field data-invalid={!!errors.password}>
-								<div className="flex items-center">
-									<FieldLabel htmlFor="password">Password</FieldLabel>
-									<Link
-										className="ml-auto text-sm underline-offset-4 hover:underline"
-										href="/"
-									>
-										Forgot your password?
-									</Link>
-								</div>
+								<FieldLabel htmlFor="password">Password</FieldLabel>
 								<Input
 									id="password"
 									type="password"
 									{...register("password")}
+									disabled={isSubmitting}
 								/>
 								<FieldError>{errors.password?.message}</FieldError>
 							</Field>
+							<Field data-invalid={!!errors.confirmPassword}>
+								<FieldLabel htmlFor="confirmPassword">
+									Konfirmasi Password
+								</FieldLabel>
+								<Input
+									id="confirmPassword"
+									type="password"
+									{...register("confirmPassword")}
+									disabled={isSubmitting}
+								/>
+								<FieldError>{errors.confirmPassword?.message}</FieldError>
+							</Field>
 							<Field>
 								<Button disabled={isSubmitting} type="submit">
-									{isSubmitting ? "Logging in..." : "Login"}
+									{isSubmitting ? "Mendaftar..." : "Daftar"}
 								</Button>
 								<FieldDescription className="text-center">
-									Buat akun baru di <Link href="/registrasi">sini</Link>
+									Sudah punya akun? <a href="/login">Login</a>
 								</FieldDescription>
 							</Field>
 						</FieldGroup>
@@ -117,9 +151,8 @@ export function LoginForm({
 				</CardContent>
 			</Card>
 			<FieldDescription className="px-6 text-center">
-				By clicking continue, you agree to our{" "}
-				<Link href="/">Terms of Service</Link> and{" "}
-				<Link href="/">Privacy Policy</Link>.
+				By clicking continue, you agree to our <a href="/">Terms of Service</a>{" "}
+				and <a href="/">Privacy Policy</a>.
 			</FieldDescription>
 		</div>
 	);

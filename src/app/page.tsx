@@ -3,10 +3,10 @@
 import { ArrowRightIcon, ListChecksIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/server/better-auth/client";
+import { auth } from "@/server/better-auth/client";
 
 export default function page() {
-	const { data, isPending } = authClient.useSession();
+	const { data, isPending } = auth.useSession();
 
 	return (
 		<main className="relative min-h-screen overflow-hidden bg-background">
@@ -32,7 +32,11 @@ export default function page() {
 						size="lg"
 					>
 						<span className="relative z-10">
-							{isPending ? "Loading..." : !data ? "Login" : "Dashboard"}
+							{isPending
+								? "Loading..."
+								: !data?.session
+									? "Login"
+									: "Dashboard"}
 						</span>
 						<ArrowRightIcon className="relative z-10 size-5 transition-transform duration-300 group-hover:translate-x-1" />
 						<div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/20 to-primary/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

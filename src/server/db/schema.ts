@@ -78,18 +78,16 @@ export const mahasiswaProfile = createTable("mahasiswaProfile", (d) => ({
 		.notNull()
 		.primaryKey()
 		.$defaultFn(() => crypto.randomUUID()),
-	nim: d.varchar("nidn", { length: 50 }).notNull().unique(),
+	nim: d.varchar("nim", { length: 50 }).notNull().unique(),
 	user_id: d
 		.text("user_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
 	fakultas_id: d
 		.text("fakultas_id")
-		.notNull()
 		.references(() => fakultas.id, { onDelete: "cascade" }),
 	jurusan_id: d
 		.text("jurusan_id")
-		.notNull()
 		.references(() => jurusan.id, { onDelete: "cascade" }),
 	createdAt: d
 		.timestamp("created_at", { withTimezone: true })
@@ -226,6 +224,9 @@ export const user = createTable("user", (d) => ({
 		.$defaultFn(() => false)
 		.notNull(),
 	image: d.text("image"),
+	role: d
+		.varchar("role", { enum: ["admin", "pegawai", "dosen", "mahasiswa"] })
+		.default("mahasiswa"),
 	createdAt: d
 		.timestamp("created_at", { withTimezone: true })
 		.$defaultFn(() => /* @__PURE__ */ new Date())
