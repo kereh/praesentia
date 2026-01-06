@@ -366,13 +366,13 @@ export const kelasRelations = relations(kelas, ({ one }) => ({
 export const absenDosenRelations = "";
 export const absenMahasiswaRelations = "";
 
-export const userRelations = relations(user, ({ many }) => ({
+export const userRelations = relations(user, ({ many, one }) => ({
 	account: many(account),
 	session: many(session),
-	adminProfile: many(adminProfile),
-	pegawaiProfile: many(pegawaiProfile),
-	dosenProfile: many(dosenProfile),
-	mahasiswaProfile: many(mahasiswaProfile),
+	adminProfile: one(adminProfile),
+	pegawaiProfile: one(pegawaiProfile),
+	dosenProfile: one(dosenProfile),
+	mahasiswaProfile: one(mahasiswaProfile),
 }));
 
 export const accountRelations = relations(account, ({ one }) => ({

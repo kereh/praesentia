@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { login } from "@/actions/auth/login";
@@ -31,6 +31,16 @@ export function LoginForm({
 	...props
 }: React.ComponentProps<"div">) {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+
+	useEffect(() => {
+		if (searchParams.get("logout") === "success") {
+			toast.success("Anda telah logout", {
+				position: "top-center",
+				duration: 3000,
+			});
+		}
+	}, [searchParams]);
 
 	const {
 		register,

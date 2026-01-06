@@ -1,4 +1,4 @@
-import { RegistrasiForm } from "@/app/_components/registrasi/registrasi-form";
+import { RegistrasiForm } from "@/app/(auth)/registrasi/_components/registrasi-form";
 import { Logo } from "@/components/logo";
 
 export default function page() {
