@@ -32,11 +32,18 @@ export const auth = betterAuth({
 	plugins: [
 		nextCookies(),
 		customSession(async ({ user, session }) => {
-			const { role, profile } = await getUserSession(user.id);
+			const { role, admin, dosen, mahasiswa, pegawai } = await getUserSession(
+				user.id,
+			);
 
 			return {
 				role,
-				profile,
+				profile: {
+					admin,
+					dosen,
+					mahasiswa,
+					pegawai,
+				},
 				user: {
 					...user,
 				},

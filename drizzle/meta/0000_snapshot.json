@@ -1,5 +1,5 @@
 {
-  "id": "5bfc4020-7f9a-4db5-be09-7e5de1c494ea",
+  "id": "0bdec018-3495-4154-9b16-539970fe62fa",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -542,8 +542,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "nidn": {
-          "name": "nidn",
+        "nim": {
+          "name": "nim",
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
@@ -558,13 +558,13 @@
           "name": "fakultas_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "jurusan_id": {
           "name": "jurusan_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -623,11 +623,11 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "praesentia_mahasiswaProfile_nidn_unique": {
-          "name": "praesentia_mahasiswaProfile_nidn_unique",
+        "praesentia_mahasiswaProfile_nim_unique": {
+          "name": "praesentia_mahasiswaProfile_nim_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "nidn"
+            "nim"
           ]
         }
       },
@@ -852,6 +852,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'mahasiswa'"
         },
         "created_at": {
           "name": "created_at",

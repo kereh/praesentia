@@ -335,6 +335,7 @@ export const mahasiswaProfileRelations = relations(
 );
 
 export const fakultasRelations = relations(fakultas, ({ many }) => ({
+	jurusan: many(jurusan),
 	pegawai: many(pegawaiProfile),
 	dosen: many(dosenProfile),
 	mahasiswa: many(mahasiswaProfile),
@@ -367,12 +368,24 @@ export const absenDosenRelations = "";
 export const absenMahasiswaRelations = "";
 
 export const userRelations = relations(user, ({ many, one }) => ({
+	admin: one(adminProfile, {
+		fields: [user.id],
+		references: [adminProfile.user_id],
+	}),
+	pegawai: one(pegawaiProfile, {
+		fields: [user.id],
+		references: [pegawaiProfile.user_id],
+	}),
+	dosen: one(dosenProfile, {
+		fields: [user.id],
+		references: [dosenProfile.user_id],
+	}),
+	mahasiswa: one(mahasiswaProfile, {
+		fields: [user.id],
+		references: [mahasiswaProfile.user_id],
+	}),
 	account: many(account),
 	session: many(session),
-	adminProfile: one(adminProfile),
-	pegawaiProfile: one(pegawaiProfile),
-	dosenProfile: one(dosenProfile),
-	mahasiswaProfile: one(mahasiswaProfile),
 }));
 
 export const accountRelations = relations(account, ({ one }) => ({

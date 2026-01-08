@@ -2,61 +2,23 @@ import { eq } from "drizzle-orm";
 import { db } from "@/server/db";
 import { user } from "@/server/db/schema";
 
-type Fakultas = { nama: string };
-type Jurusan = { nama: string };
-
-type AdminProfile = {
-	id: string;
-	user_id: string;
-	createdAt: Date;
-	updatedAt: Date;
-} | null;
-
-type ProfileWithFakultas = {
-	id: string;
-	user_id: string;
-	fakultas_id: string;
-	createdAt: Date;
-	updatedAt: Date;
-	fakultas: Fakultas | null;
-} | null;
-
-type MahasiswaProfileType = {
-	id: string;
-	user_id: string;
-	nim: string;
-	fakultas_id: string | null;
-	jurusan_id: string | null;
-	createdAt: Date;
-	updatedAt: Date;
-	fakultas: Fakultas | null;
-	jurusan: Jurusan | null;
-} | null;
-
-type UserSession =
-	| { role: null; profile: null }
-	| { role: "admin"; profile: AdminProfile }
-	| { role: "pegawai"; profile: ProfileWithFakultas }
-	| { role: "dosen"; profile: ProfileWithFakultas }
-	| { role: "mahasiswa"; profile: MahasiswaProfileType };
-
-export const getUserSession = async (id: string): Promise<UserSession> => {
+export const getUserSession = async (id: string) => {
 	const userData = await db.query.user.findFirst({
 		where: eq(user.id, id),
 		columns: { role: true },
 		with: {
-			adminProfile: true,
-			pegawaiProfile: {
+			admin: true,
+			pegawai: {
 				with: {
 					fakultas: { columns: { nama: true } },
 				},
 			},
-			dosenProfile: {
+			dosen: {
 				with: {
 					fakultas: { columns: { nama: true } },
 				},
 			},
-			mahasiswaProfile: {
+			mahasiswa: {
 				with: {
 					fakultas: { columns: { nama: true } },
 					jurusan: { columns: { nama: true } },
@@ -65,18 +27,20 @@ export const getUserSession = async (id: string): Promise<UserSession> => {
 		},
 	});
 
-	if (!userData?.role) return { role: null, profile: null };
+	if (!userData?.role)
+		return {
+			role: null,
+			admin: null,
+			pegawai: null,
+			dosen: null,
+			mahasiswa: null,
+		};
 
-	switch (userData.role) {
-		case "admin":
-			return { role: "admin", profile: userData.adminProfile };
-		case "pegawai":
-			return { role: "pegawai", profile: userData.pegawaiProfile };
-		case "dosen":
-			return { role: "dosen", profile: userData.dosenProfile };
-		case "mahasiswa":
-			return { role: "mahasiswa", profile: userData.mahasiswaProfile };
-		default:
-			return { role: null, profile: null };
-	}
+	return {
+		role: userData.role,
+		admin: userData.admin,
+		pegawai: userData.pegawai,
+		dosen: userData.dosen,
+		mahasiswa: userData.mahasiswa,
+	};
 };

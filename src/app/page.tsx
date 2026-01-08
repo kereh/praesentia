@@ -3,10 +3,10 @@
 import { ArrowRightIcon, ListChecksIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/server/better-auth/client";
+import { authClient } from "@/server/better-auth/client";
 
 export default function page() {
-	const { data, isPending } = auth.useSession();
+	const { data, isPending } = authClient.useSession();
 
 	return (
 		<main className="relative min-h-screen overflow-hidden bg-background">
@@ -26,7 +26,7 @@ export default function page() {
 					presence data with ease and precision.
 				</p>
 
-				<Link href={`${!data ? "/login" : "/"}`}>
+				<Link href={`${!data ? "/login" : `/${data.role}`}`}>
 					<Button
 						className="group relative h-auto gap-3 overflow-hidden rounded-md px-8 py-2 text-lg shadow-lg shadow-primary/25 transition-all duration-300 hover:scale-105 hover:bg-primary hover:shadow-primary/30 hover:shadow-xl"
 						size="lg"

@@ -1,1 +1,0 @@
-ALTER TABLE "praesentia_user" ADD COLUMN "role" varchar DEFAULT 'mahasiswa';

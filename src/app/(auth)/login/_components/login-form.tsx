@@ -91,7 +91,7 @@ export function LoginForm({
 								<FieldLabel htmlFor="email">Email</FieldLabel>
 								<Input
 									id="email"
-									placeholder="m@example.com"
+									placeholder="mybini@example.com"
 									type="email"
 									{...register("email")}
 								/>

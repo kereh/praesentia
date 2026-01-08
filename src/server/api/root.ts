@@ -1,14 +1,12 @@
-import {
-	createCallerFactory,
-	createTRPCRouter,
-	publicProcedure,
-} from "@/server/api/trpc";
+import { fakultasRouter } from "@/server/api/routers/fakultas";
+import { jurusanRouter } from "@/server/api/routers/jurusan";
+import { mahasiswaRouter } from "@/server/api/routers/mahasiswa";
+import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 export const appRouter = createTRPCRouter({
-	health: publicProcedure.query(() => ({
-		status: "okay",
-		time: new Date().toISOString(),
-	})),
+	fakultas: fakultasRouter,
+	jurusan: jurusanRouter,
+	mahasiswa: mahasiswaRouter,
 });
 
 // export type definition of API

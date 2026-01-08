@@ -75,13 +75,13 @@ CREATE TABLE "praesentia_kelas" (
 --> statement-breakpoint
 CREATE TABLE "praesentia_mahasiswaProfile" (
 	"id" text PRIMARY KEY NOT NULL,
-	"nidn" varchar(50) NOT NULL,
+	"nim" varchar(50) NOT NULL,
 	"user_id" text NOT NULL,
-	"fakultas_id" text NOT NULL,
-	"jurusan_id" text NOT NULL,
+	"fakultas_id" text,
+	"jurusan_id" text,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
-	CONSTRAINT "praesentia_mahasiswaProfile_nidn_unique" UNIQUE("nidn")
+	CONSTRAINT "praesentia_mahasiswaProfile_nim_unique" UNIQUE("nim")
 );
 --> statement-breakpoint
 CREATE TABLE "praesentia_mata_kuliah" (
@@ -116,6 +116,7 @@ CREATE TABLE "praesentia_user" (
 	"email" text NOT NULL,
 	"email_verified" boolean NOT NULL,
 	"image" text,
+	"role" varchar DEFAULT 'mahasiswa',
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL,
 	CONSTRAINT "praesentia_user_email_unique" UNIQUE("email")

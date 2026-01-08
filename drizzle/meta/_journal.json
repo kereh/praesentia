@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1767520681926,
-      "tag": "0000_abandoned_lyja",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1767582840202,
-      "tag": "0001_third_nightshade",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1767599457885,
-      "tag": "0002_hot_shen",
+      "when": 1767685977108,
+      "tag": "0000_loud_hammerhead",
       "breakpoints": true
     }
   ]

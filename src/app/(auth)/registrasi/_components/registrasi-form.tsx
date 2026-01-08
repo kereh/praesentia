@@ -109,7 +109,7 @@ export function RegistrasiForm({
 								<FieldLabel htmlFor="email">Email</FieldLabel>
 								<Input
 									id="email"
-									placeholder="mybini@carbeat.com"
+									placeholder="mybini@example.com"
 									type="email"
 									{...register("email")}
 									disabled={isSubmitting}
