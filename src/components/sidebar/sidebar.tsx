@@ -3,7 +3,10 @@
 import { Command } from "lucide-react";
 import Link from "next/link";
 import type * as React from "react";
-import { navItems, userData } from "@/components/navigations/navigation.data";
+import type {
+	NavItem,
+	UserData,
+} from "@/components/navigations/navigation.types";
 import { SidebarNav } from "@/components/sidebar/sidebar-nav";
 import { SidebarUser } from "@/components/sidebar/sidebar-user";
 import {
@@ -16,9 +19,18 @@ import {
 	SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+type SidebarMainProps = React.ComponentProps<typeof Sidebar> & {
+	items: NavItem[];
+	user: UserData;
+	homeUrl?: string;
+};
+
 export function SidebarMain({
+	items,
+	user,
+	homeUrl = "/",
 	...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: SidebarMainProps) {
 	return (
 		<Sidebar
 			className="top-(--header-height) hidden h-[calc(100svh-var(--header-height))]! md:flex"
@@ -28,7 +40,7 @@ export function SidebarMain({
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton asChild size="lg">
-							<Link href="/mahasiswa">
+							<Link href={homeUrl}>
 								<div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-primary text-sidebar-primary-foreground">
 									<Command className="size-4" />
 								</div>
@@ -44,10 +56,10 @@ export function SidebarMain({
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent className="px-2">
-				<SidebarNav items={navItems} />
+				<SidebarNav items={items} />
 			</SidebarContent>
 			<SidebarFooter className="border-sidebar-border/50 border-t">
-				<SidebarUser user={userData} />
+				<SidebarUser user={user} />
 			</SidebarFooter>
 		</Sidebar>
 	);

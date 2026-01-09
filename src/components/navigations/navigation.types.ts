@@ -1,5 +1,3 @@
-import type { LucideIcon } from "lucide-react";
-
 export type NavSubItem = {
 	title: string;
 	url: string;
@@ -8,10 +6,14 @@ export type NavSubItem = {
 export type NavItem = {
 	title: string;
 	url: string;
-	icon: LucideIcon;
+	icon: string;
 	isActive?: boolean;
 	items?: NavSubItem[];
 };
+
+export type Role = "admin" | "pegawai" | "dosen" | "mahasiswa";
+
+export type NavConfig = Record<Role, NavItem[]>;
 
 export type UserData = {
 	name: string;

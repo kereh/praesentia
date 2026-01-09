@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { MobileNav } from "@/components/mobile/mobile-nav";
+import {
+	getNavItemsByRole,
+	userData,
+} from "@/components/navigations/navigation.data";
+import type { Role } from "@/components/navigations/navigation.types";
 import { SidebarMain } from "@/components/sidebar/sidebar";
 import { SiteHeader } from "@/components/sidebar/sidebar-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { auth } from "@/server/better-auth";
 
 export const metadata: Metadata = {
 	title: "Dashboard",
@@ -10,9 +17,17 @@ export const metadata: Metadata = {
 	icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function Layout({
+export default async function Layout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
+
+	const role = session?.role as Role | null;
+	const navItems = getNavItemsByRole(role);
+	const homeUrl = role ? `/${role}` : "/";
+
 	return (
 		<div className="min-h-svh overflow-x-hidden [--bottom-nav-height:4.5rem] [--header-height:calc(--spacing(14))]">
 			<SidebarProvider className="flex flex-col">
@@ -20,12 +35,12 @@ export default function Layout({
 					<SiteHeader />
 				</div>
 				<div className="flex flex-1">
-					<SidebarMain />
+					<SidebarMain homeUrl={homeUrl} items={navItems} user={userData} />
 					<SidebarInset className="max-w-full overflow-x-hidden p-4 pb-[calc(var(--bottom-nav-height)+1rem)] md:pb-4">
 						{children}
 					</SidebarInset>
 				</div>
-				<MobileNav />
+				<MobileNav items={navItems} />
 			</SidebarProvider>
 		</div>
 	);

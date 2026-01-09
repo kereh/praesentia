@@ -3,6 +3,8 @@
 import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getIcon } from "@/components/navigations/icons";
+import type { NavItem } from "@/components/navigations/navigation.types";
 import {
 	Sheet,
 	SheetContent,
@@ -11,21 +13,24 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { navItems } from "../navigations/navigation.data";
 
 const VISIBLE_ITEMS = 3;
 
-export function MobileNav() {
+type MobileNavProps = {
+	items: NavItem[];
+};
+
+export function MobileNav({ items }: MobileNavProps) {
 	const pathname = usePathname();
-	const visibleItems = navItems.slice(0, VISIBLE_ITEMS);
-	const moreItems = navItems.slice(VISIBLE_ITEMS);
+	const visibleItems = items.slice(0, VISIBLE_ITEMS);
+	const moreItems = items.slice(VISIBLE_ITEMS);
 
 	return (
 		<nav className="fixed inset-x-0 bottom-0 z-50 flex h-(--bottom-nav-height,4.5rem) items-stretch justify-around border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden">
 			{visibleItems.map((item) => {
 				const isActive =
 					pathname === item.url || pathname.startsWith(`${item.url}/`);
-				const Icon = item.icon;
+				const Icon = getIcon(item.icon);
 
 				return (
 					<Link
@@ -77,7 +82,7 @@ export function MobileNav() {
 							{moreItems.map((item) => {
 								const isActive =
 									pathname === item.url || pathname.startsWith(`${item.url}/`);
-								const Icon = item.icon;
+								const Icon = getIcon(item.icon);
 
 								return (
 									<Link

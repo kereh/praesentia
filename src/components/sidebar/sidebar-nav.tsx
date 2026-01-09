@@ -3,6 +3,8 @@
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getIcon } from "@/components/navigations/icons";
+import type { NavItem } from "@/components/navigations/navigation.types";
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -20,7 +22,6 @@ import {
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import type { NavItem } from "../navigations/navigation.types";
 
 export function SidebarNav({ items }: { items: NavItem[] }) {
 	const pathname = usePathname();
@@ -39,6 +40,7 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
 							(sub) =>
 								pathname === sub.url || pathname.startsWith(`${sub.url}/`),
 						);
+					const Icon = getIcon(item.icon);
 
 					return (
 						<Collapsible asChild defaultOpen={isActive} key={item.title}>
@@ -55,7 +57,7 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
 										{isActive && (
 											<span className="absolute left-0 h-full w-0.5 rounded-full bg-primary" />
 										)}
-										<item.icon className="size-4" />
+										<Icon className="size-4" />
 										<span>{item.title}</span>
 									</Link>
 								</SidebarMenuButton>
