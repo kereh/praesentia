@@ -33,13 +33,15 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
 			</SidebarGroupLabel>
 			<SidebarMenu className="gap-0.5">
 				{items.map((item) => {
-					const isActive =
-						pathname === item.url ||
-						pathname.startsWith(`${item.url}/`) ||
-						item.items?.some(
-							(sub) =>
-								pathname === sub.url || pathname.startsWith(`${sub.url}/`),
-						);
+					const hasSubItems = item.items && item.items.length > 0;
+					const isActive = hasSubItems
+						? pathname === item.url ||
+							pathname.startsWith(`${item.url}/`) ||
+							item.items?.some(
+								(sub) =>
+									pathname === sub.url || pathname.startsWith(`${sub.url}/`),
+							)
+						: pathname === item.url;
 					const Icon = getIcon(item.icon);
 
 					return (

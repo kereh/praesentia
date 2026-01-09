@@ -1,4 +1,4 @@
-import { KelasTable } from "./_components/kelas-table";
+import { KelasTable } from "./_components/table/kelas-table";
 
 export default function page() {
 	return (

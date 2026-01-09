@@ -2,11 +2,13 @@ import { fakultasRouter } from "@/server/api/routers/fakultas";
 import { jurusanRouter } from "@/server/api/routers/jurusan";
 import { mahasiswaRouter } from "@/server/api/routers/mahasiswa";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
+import { kelasRouter } from "./routers/kelas";
 
 export const appRouter = createTRPCRouter({
 	fakultas: fakultasRouter,
 	jurusan: jurusanRouter,
 	mahasiswa: mahasiswaRouter,
+	kelas: kelasRouter,
 });
 
 // export type definition of API

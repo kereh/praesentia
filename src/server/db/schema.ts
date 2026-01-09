@@ -181,7 +181,7 @@ export const mataKuliah = createTable("mata_kuliah", (d) => ({
 		.notNull()
 		.primaryKey()
 		.$defaultFn(() => crypto.randomUUID()),
-	name: d.text("name").unique(),
+	nama: d.text("nama").unique(),
 	dosen_id: d
 		.text("dosen_id")
 		.notNull()

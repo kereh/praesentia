@@ -28,8 +28,10 @@ export function MobileNav({ items }: MobileNavProps) {
 	return (
 		<nav className="fixed inset-x-0 bottom-0 z-50 flex h-(--bottom-nav-height,4.5rem) items-stretch justify-around border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden">
 			{visibleItems.map((item) => {
-				const isActive =
-					pathname === item.url || pathname.startsWith(`${item.url}/`);
+				const hasSubItems = item.items && item.items.length > 0;
+				const isActive = hasSubItems
+					? pathname === item.url || pathname.startsWith(`${item.url}/`)
+					: pathname === item.url;
 				const Icon = getIcon(item.icon);
 
 				return (
@@ -80,8 +82,10 @@ export function MobileNav({ items }: MobileNavProps) {
 						</SheetHeader>
 						<div className="grid gap-2 px-4 pb-4">
 							{moreItems.map((item) => {
-								const isActive =
-									pathname === item.url || pathname.startsWith(`${item.url}/`);
+								const hasSubItems = item.items && item.items.length > 0;
+								const isActive = hasSubItems
+									? pathname === item.url || pathname.startsWith(`${item.url}/`)
+									: pathname === item.url;
 								const Icon = getIcon(item.icon);
 
 								return (
