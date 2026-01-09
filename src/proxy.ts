@@ -25,6 +25,20 @@ export async function proxy(request: NextRequest) {
 		const role = session.role;
 		const roleBasedPath = roles[role as keyof typeof roles] ?? "";
 
+		if (
+			pathname.startsWith("/mahasiswa") &&
+			!pathname.startsWith("/mahasiswa/setup") &&
+			!session.profile.mahasiswa?.fakultas_id
+		)
+			return NextResponse.redirect(new URL("/mahasiswa/setup", request.url));
+
+		if (
+			pathname.startsWith("/mahasiswa") &&
+			pathname.startsWith("/mahasiswa/setup") &&
+			session.profile.mahasiswa?.fakultas_id
+		)
+			return NextResponse.redirect(new URL("/mahasiswa", request.url));
+
 		if (pathname.includes("/login") || pathname.includes("/register"))
 			return NextResponse.redirect(new URL(`${roleBasedPath}`, request.url));
 

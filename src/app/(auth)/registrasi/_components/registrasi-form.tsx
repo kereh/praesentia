@@ -59,7 +59,7 @@ export function RegistrasiForm({
 
 			toast.promise(registrasiPromise, {
 				loading: "Registrasi sedang diproses...",
-				position: "top-center",
+				position: "bottom-right",
 				success: "Registrasi berhasil!",
 				duration: 2000,
 				error: (err: Error) => err.message,
@@ -92,18 +92,21 @@ export function RegistrasiForm({
 									{...register("name")}
 									disabled={isSubmitting}
 								/>
+								<FieldDescription>Masukan Nama Lengkap</FieldDescription>
 								<FieldError>{errors.name?.message}</FieldError>
 							</Field>
 							<Field data-invalid={!!errors.nim}>
 								<FieldLabel htmlFor="nim">Nomor Induk Mahasiswa</FieldLabel>
 								<Input
 									id="nim"
-									placeholder="8 Digit NIM"
 									type="text"
 									{...register("nim")}
 									disabled={isSubmitting}
 								/>
-								<FieldError>{errors.name?.message}</FieldError>
+								<FieldDescription>
+									Nomor Induk Mahasiswa 8 Digit
+								</FieldDescription>
+								<FieldError>{errors.nim?.message}</FieldError>
 							</Field>
 							<Field data-invalid={!!errors.email}>
 								<FieldLabel htmlFor="email">Email</FieldLabel>

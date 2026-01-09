@@ -1,12 +1,10 @@
-"use client";
-
 import { ArrowRightIcon, ListChecksIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/server/better-auth/client";
+import { getSession } from "@/server/better-auth/server";
 
-export default function page() {
-	const { data, isPending } = authClient.useSession();
+export default async function page() {
+	const session = await getSession();
 
 	return (
 		<main className="relative min-h-screen overflow-hidden bg-background">
@@ -26,17 +24,13 @@ export default function page() {
 					presence data with ease and precision.
 				</p>
 
-				<Link href={`${!data ? "/login" : `/${data.role}`}`}>
+				<Link href={`${!session ? "/login" : `/${session.role}`}`}>
 					<Button
 						className="group relative h-auto gap-3 overflow-hidden rounded-md px-8 py-2 text-lg shadow-lg shadow-primary/25 transition-all duration-300 hover:scale-105 hover:bg-primary hover:shadow-primary/30 hover:shadow-xl"
 						size="lg"
 					>
 						<span className="relative z-10">
-							{isPending
-								? "Loading..."
-								: !data?.session
-									? "Login"
-									: "Dashboard"}
+							{!session ? "Login" : "Dashboard"}
 						</span>
 						<ArrowRightIcon className="relative z-10 size-5 transition-transform duration-300 group-hover:translate-x-1" />
 						<div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/20 to-primary/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

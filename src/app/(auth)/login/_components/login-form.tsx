@@ -36,7 +36,7 @@ export function LoginForm({
 	useEffect(() => {
 		if (searchParams.get("logout") === "success") {
 			toast.success("Anda telah logout", {
-				position: "top-center",
+				position: "bottom-right",
 				duration: 3000,
 			});
 		}
@@ -63,7 +63,7 @@ export function LoginForm({
 
 			toast.promise(loginPromise, {
 				loading: "Login sedang diproses...",
-				position: "top-center",
+				position: "bottom-right",
 				success: "Login berhasil!",
 				duration: 2000,
 				error: (err: Error) => err.message,

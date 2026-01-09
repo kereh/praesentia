@@ -1,10 +1,17 @@
 import "@/styles/globals.css";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/react";
+
+export const viewport: Viewport = {
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 1,
+	userScalable: false,
+};
 
 export const metadata: Metadata = {
 	title: "Create T3 App",

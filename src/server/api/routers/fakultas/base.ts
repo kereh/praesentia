@@ -7,11 +7,13 @@ export const fakultasBase = createTRPCRouter({
 				with: {
 					jurusan: {
 						columns: {
+							id: true,
 							nama: true,
 						},
 					},
 				},
 				columns: {
+					id: true,
 					nama: true,
 				},
 			}),
