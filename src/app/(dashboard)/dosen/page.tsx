@@ -10,11 +10,7 @@ export default async function page() {
 
 	return (
 		<div>
-			<h1>
-				Login as {session?.user.name} - {session?.profile.dosen?.nidn} -{" "}
-				{session?.role}
-			</h1>
-			<pre className="text-sm">{JSON.stringify(session, null, 4)}</pre>
+			<h1>Login as {session?.user.name}</h1>
 			<br />
 			<Button onClick={logout}>Signout</Button>
 		</div>

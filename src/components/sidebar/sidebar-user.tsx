@@ -7,6 +7,7 @@ import {
 	LogOut,
 	Settings,
 } from "lucide-react";
+import { logout } from "@/actions/auth/logout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	DropdownMenu,
@@ -99,7 +100,10 @@ export function SidebarUser({ user }: { user: UserData }) {
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem className="text-destructive focus:text-destructive">
+						<DropdownMenuItem
+							className="text-destructive focus:text-destructive"
+							onClick={async () => await logout()}
+						>
 							<LogOut className="mr-2 size-4" />
 							Log out
 						</DropdownMenuItem>

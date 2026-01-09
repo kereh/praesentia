@@ -5,6 +5,7 @@ import Link from "next/link";
 import type * as React from "react";
 import type {
 	NavItem,
+	Role,
 	UserData,
 } from "@/components/navigations/navigation.types";
 import { SidebarNav } from "@/components/sidebar/sidebar-nav";
@@ -23,12 +24,14 @@ type SidebarMainProps = React.ComponentProps<typeof Sidebar> & {
 	items: NavItem[];
 	user: UserData;
 	homeUrl?: string;
+	role: Role;
 };
 
 export function SidebarMain({
 	items,
 	user,
 	homeUrl = "/",
+	role,
 	...props
 }: SidebarMainProps) {
 	return (
@@ -47,7 +50,7 @@ export function SidebarMain({
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-semibold">Praesentia</span>
 									<span className="truncate text-muted-foreground text-xs">
-										Enterprise
+										Login Sebagai {role.toUpperCase()}
 									</span>
 								</div>
 							</Link>

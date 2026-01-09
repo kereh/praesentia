@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { MobileNav } from "@/components/mobile/mobile-nav";
 import {
 	getNavItemsByRole,
@@ -35,9 +36,14 @@ export default async function Layout({
 					<SiteHeader />
 				</div>
 				<div className="flex flex-1">
-					<SidebarMain homeUrl={homeUrl} items={navItems} user={userData} />
-					<SidebarInset className="max-w-full overflow-x-hidden p-4 pb-[calc(var(--bottom-nav-height)+1rem)] md:pb-4">
-						{children}
+					<SidebarMain
+						homeUrl={homeUrl}
+						items={navItems}
+						role={role as Role}
+						user={userData}
+					/>
+					<SidebarInset className="max-w-full overflow-x-hidden p-6 pb-[calc(var(--bottom-nav-height)+1rem)] md:pb-6">
+						<NuqsAdapter>{children}</NuqsAdapter>
 					</SidebarInset>
 				</div>
 				<MobileNav items={navItems} />
