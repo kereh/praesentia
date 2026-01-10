@@ -48,7 +48,7 @@ function SetupSkeleton() {
 }
 
 export function Setup({ id }: SetupProps) {
-	const { data: fakultas, isPending } = api.fakultas.list.useQuery();
+	const { data: fakultas, isPending } = api.fakultas.mahasiswa.list.useQuery();
 	const { refresh } = useRouter();
 
 	const form = useForm<SetupSchema>({
@@ -63,7 +63,7 @@ export function Setup({ id }: SetupProps) {
 	const watchFakultasId = form.watch("fakultas_id");
 
 	const { mutate: setupMutation, isPending: setupPending } =
-		api.mahasiswa.setup.useMutation({
+		api.mahasiswa.protected.setup.useMutation({
 			onSuccess: () => {
 				toast.success("Setup berhasil!");
 				refresh();

@@ -18,10 +18,10 @@ import {
 import { useDataTable } from "@/hooks/use-data-table";
 import { api, type RouterOutputs } from "@/trpc/react";
 
-type Data = RouterOutputs["kelas"]["listForDosen"][number];
+type Data = RouterOutputs["kelas"]["dosen"]["list"][number];
 
 export function KelasTable() {
-	const { data: kelas } = api.kelas.listForDosen.useQuery();
+	const { data: kelas } = api.kelas.dosen.list.useQuery();
 
 	const columns = React.useMemo<ColumnDef<Data>[]>(
 		() => [

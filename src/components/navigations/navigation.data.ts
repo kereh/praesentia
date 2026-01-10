@@ -1,4 +1,4 @@
-import type { NavConfig, Role, UserData } from "./navigation.types";
+import type { NavConfig, Role } from "./navigation.types";
 
 export const navConfig: NavConfig = {
 	admin: [
@@ -34,9 +34,3 @@ export function getNavItemsByRole(role: Role | null) {
 	if (!role) return [];
 	return navConfig[role] ?? [];
 }
-
-export const userData: UserData = {
-	name: "shadcn",
-	email: "m@example.com",
-	avatar: "",
-};

@@ -1,6 +1,6 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import { jurusanBaseRouters } from "./jurusan-base";
+import { jurusanMahasiswaRouter } from "./mahasiswa";
 
 export const jurusanRouter = createTRPCRouter({
-	...jurusanBaseRouters._def.procedures,
+	mahasiswa: jurusanMahasiswaRouter,
 });

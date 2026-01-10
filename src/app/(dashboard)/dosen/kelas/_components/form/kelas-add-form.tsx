@@ -48,13 +48,13 @@ function FormSkeleton() {
 export function KelasAddForm({ dosenId }: { dosenId: string }) {
 	const router = useRouter();
 	const { data: fakultas, isPending: fakultasPending } =
-		api.fakultas.list.useQuery();
+		api.fakultas.dosen.list.useQuery();
 
 	const { data: semester, isPending: semesterPending } =
-		api.semester.list.useQuery();
+		api.semester.dosen.list.useQuery();
 
 	const { data: mataKuliah, isPending: mataKuliahPending } =
-		api.mataKuliah.list.useQuery();
+		api.mataKuliah.dosen.list.useQuery();
 
 	const form = useForm<FormSchema>({
 		resolver: zodResolver(kelasDosenAddSchema),
@@ -72,7 +72,7 @@ export function KelasAddForm({ dosenId }: { dosenId: string }) {
 	const watchFakultasId = form.watch("fakultas_id");
 
 	const { mutate: createKelas, isPending: createPending } =
-		api.kelas.create.useMutation({
+		api.kelas.dosen.create.useMutation({
 			onSuccess: () => {
 				toast.success("Kelas berhasil dibuat!");
 				router.push("/dosen/kelas");

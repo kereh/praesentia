@@ -1,8 +1,8 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import { mahasiswaBaseRouters } from "./mahasiswa-base";
-import { mahasiswaSetupRouter } from "./mahasiswa-setup";
+import { mahasiswaDosenProcedure } from "./dosen";
+import { mahasiswaProtectedRouter } from "./mahasiswa";
 
 export const mahasiswaRouter = createTRPCRouter({
-	...mahasiswaBaseRouters._def.procedures,
-	...mahasiswaSetupRouter._def.procedures,
+	dosen: mahasiswaDosenProcedure,
+	protected: mahasiswaProtectedRouter,
 });

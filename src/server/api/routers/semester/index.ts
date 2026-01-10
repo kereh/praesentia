@@ -1,7 +1,6 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter } from "@/server/api/trpc";
+import { semesterDosenRouter } from "./dosen";
 
 export const semesterRouter = createTRPCRouter({
-	list: publicProcedure.query(async ({ ctx }) => {
-		return await ctx.db.query.semester.findMany();
-	}),
+	dosen: semesterDosenRouter,
 });

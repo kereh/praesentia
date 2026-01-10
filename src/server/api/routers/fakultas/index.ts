@@ -1,6 +1,8 @@
-import { fakultasBaseRouters } from "@/server/api/routers/fakultas/fakultas-base";
 import { createTRPCRouter } from "@/server/api/trpc";
+import { fakultasDosenRouter } from "./dosen";
+import { fakultasMahasiswaRouter } from "./mahasiswa";
 
 export const fakultasRouter = createTRPCRouter({
-	...fakultasBaseRouters._def.procedures,
+	mahasiswa: fakultasMahasiswaRouter,
+	dosen: fakultasDosenRouter,
 });

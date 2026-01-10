@@ -3,8 +3,8 @@ import { kelasDosenAddSchema } from "@/schemas/schema-kelas";
 import { createTRPCRouter, dosenProcedure } from "@/server/api/trpc";
 import { kelas } from "@/server/db/schema";
 
-export const kelasDosenRouters = createTRPCRouter({
-	listForDosen: dosenProcedure.query(async ({ ctx }) => {
+export const kelasDosenRouter = createTRPCRouter({
+	list: dosenProcedure.query(async ({ ctx }) => {
 		if (!ctx.session.profile.dosen) return [];
 		return await ctx.db.query.kelas.findMany({
 			where: eq(kelas.dosen_id, ctx.session.profile.dosen.id),

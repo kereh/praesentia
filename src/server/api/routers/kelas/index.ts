@@ -1,8 +1,8 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import { kelasBaseRouters } from "./kelas-base";
-import { kelasDosenRouters } from "./kelas-dosen";
+import { kelasDosenRouter } from "./dosen";
+import { kelasMahasiswaRouter } from "./mahasiswa";
 
 export const kelasRouter = createTRPCRouter({
-	...kelasBaseRouters._def.procedures,
-	...kelasDosenRouters._def.procedures,
+	dosen: kelasDosenRouter,
+	protected: kelasMahasiswaRouter,
 });
