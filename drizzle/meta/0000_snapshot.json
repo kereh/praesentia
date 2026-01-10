@@ -1,5 +1,5 @@
 {
-  "id": "0bdec018-3495-4154-9b16-539970fe62fa",
+  "id": "3aadb020-04f4-45c4-8168-000df9ab678e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -438,6 +438,18 @@
           "primaryKey": false,
           "notNull": true
         },
+        "dosen_id": {
+          "name": "dosen_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "semester_id": {
+          "name": "semester_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "mata_kuliah_id": {
           "name": "mata_kuliah_id",
           "type": "text",
@@ -471,6 +483,32 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "praesentia_kelas_dosen_id_praesentia_dosenProfile_id_fk": {
+          "name": "praesentia_kelas_dosen_id_praesentia_dosenProfile_id_fk",
+          "tableFrom": "praesentia_kelas",
+          "tableTo": "praesentia_dosenProfile",
+          "columnsFrom": [
+            "dosen_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "praesentia_kelas_semester_id_praesentia_semester_id_fk": {
+          "name": "praesentia_kelas_semester_id_praesentia_semester_id_fk",
+          "tableFrom": "praesentia_kelas",
+          "tableTo": "praesentia_semester",
+          "columnsFrom": [
+            "semester_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "praesentia_kelas_mata_kuliah_id_praesentia_mata_kuliah_id_fk": {
           "name": "praesentia_kelas_mata_kuliah_id_praesentia_mata_kuliah_id_fk",
           "tableFrom": "praesentia_kelas",
@@ -528,6 +566,58 @@
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.praesentia_mahasiswa_mata_kuliah": {
+      "name": "praesentia_mahasiswa_mata_kuliah",
+      "schema": "",
+      "columns": {
+        "mahasiswa_id": {
+          "name": "mahasiswa_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mata_kuliah_id": {
+          "name": "mata_kuliah_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "praesentia_mahasiswa_mata_kuliah_mahasiswa_id_praesentia_mahasiswaProfile_id_fk": {
+          "name": "praesentia_mahasiswa_mata_kuliah_mahasiswa_id_praesentia_mahasiswaProfile_id_fk",
+          "tableFrom": "praesentia_mahasiswa_mata_kuliah",
+          "tableTo": "praesentia_mahasiswaProfile",
+          "columnsFrom": [
+            "mahasiswa_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "praesentia_mahasiswa_mata_kuliah_mata_kuliah_id_praesentia_mata_kuliah_id_fk": {
+          "name": "praesentia_mahasiswa_mata_kuliah_mata_kuliah_id_praesentia_mata_kuliah_id_fk",
+          "tableFrom": "praesentia_mahasiswa_mata_kuliah",
+          "tableTo": "praesentia_mata_kuliah",
+          "columnsFrom": [
+            "mata_kuliah_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -645,6 +735,18 @@
           "primaryKey": true,
           "notNull": true
         },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dosen_id": {
+          "name": "dosen_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -659,9 +761,31 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "praesentia_mata_kuliah_dosen_id_praesentia_dosenProfile_id_fk": {
+          "name": "praesentia_mata_kuliah_dosen_id_praesentia_dosenProfile_id_fk",
+          "tableFrom": "praesentia_mata_kuliah",
+          "tableTo": "praesentia_dosenProfile",
+          "columnsFrom": [
+            "dosen_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "praesentia_mata_kuliah_nama_unique": {
+          "name": "praesentia_mata_kuliah_nama_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "nama"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -732,6 +856,39 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.praesentia_semester": {
+      "name": "praesentia_semester",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "praesentia_semester_name_unique": {
+          "name": "praesentia_semester_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

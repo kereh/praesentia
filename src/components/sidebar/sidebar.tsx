@@ -3,11 +3,7 @@
 import { Command } from "lucide-react";
 import Link from "next/link";
 import type * as React from "react";
-import type {
-	NavItem,
-	Role,
-	UserData,
-} from "@/components/navigations/navigation.types";
+import type { NavItem, Role } from "@/components/navigations/navigation.types";
 import { SidebarNav } from "@/components/sidebar/sidebar-nav";
 import { SidebarUser } from "@/components/sidebar/sidebar-user";
 import {
@@ -19,10 +15,11 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import type { Session } from "@/server/better-auth/config";
 
 type SidebarMainProps = React.ComponentProps<typeof Sidebar> & {
 	items: NavItem[];
-	user: UserData;
+	user: Session["user"];
 	homeUrl?: string;
 	role: Role;
 };

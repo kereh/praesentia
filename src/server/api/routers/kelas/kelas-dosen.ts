@@ -8,10 +8,34 @@ export const kelasDosenRouters = createTRPCRouter({
 		if (!ctx.session.profile.dosen) return [];
 		return await ctx.db.query.kelas.findMany({
 			where: eq(kelas.dosen_id, ctx.session.profile.dosen.id),
+			with: {
+				fakultas: {
+					columns: {
+						nama: true,
+					},
+					with: {
+						jurusan: {
+							columns: {
+								nama: true,
+							},
+						},
+					},
+				},
+				semester: {
+					columns: {
+						name: true,
+					},
+				},
+				mata_kuliah: {
+					columns: {
+						nama: true,
+					},
+				},
+			},
 		});
 	}),
 
-	createForDosen: dosenProcedure
+	create: dosenProcedure
 		.input(kelasDosenAddSchema)
 		.mutation(async ({ ctx, input }) => {
 			const [newKelas] = await ctx.db

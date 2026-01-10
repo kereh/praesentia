@@ -2,15 +2,13 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { MobileNav } from "@/components/mobile/mobile-nav";
-import {
-	getNavItemsByRole,
-	userData,
-} from "@/components/navigations/navigation.data";
+import { getNavItemsByRole } from "@/components/navigations/navigation.data";
 import type { Role } from "@/components/navigations/navigation.types";
 import { SidebarMain } from "@/components/sidebar/sidebar";
 import { SiteHeader } from "@/components/sidebar/sidebar-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { auth } from "@/server/better-auth";
+import type { Session } from "@/server/better-auth/config";
 
 export const metadata: Metadata = {
 	title: "Dashboard",
@@ -40,7 +38,7 @@ export default async function Layout({
 						homeUrl={homeUrl}
 						items={navItems}
 						role={role as Role}
-						user={userData}
+						user={session?.user as Session["user"]}
 					/>
 					<SidebarInset className="max-w-full overflow-x-hidden p-6 pb-[calc(var(--bottom-nav-height)+1rem)] md:pb-6">
 						<NuqsAdapter>{children}</NuqsAdapter>

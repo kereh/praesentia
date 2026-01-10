@@ -5,36 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1767685977108,
-      "tag": "0000_loud_hammerhead",
+      "when": 1768035687803,
+      "tag": "0000_demonic_yellowjacket",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1767951826592,
-      "tag": "0001_empty_forge",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1767952958390,
-      "tag": "0002_steady_blazing_skull",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1767961334324,
-      "tag": "0003_fast_mattie_franklin",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1767963618049,
-      "tag": "0004_neat_caretaker",
+      "when": 1768039291263,
+      "tag": "0001_bent_chat",
       "breakpoints": true
     }
   ]

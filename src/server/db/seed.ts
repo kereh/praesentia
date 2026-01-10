@@ -1,47 +1,37 @@
-import { scryptAsync } from "@noble/hashes/scrypt";
-import { bytesToHex, randomBytes } from "@noble/hashes/utils";
+import { eq } from "drizzle-orm";
 import { db } from "@/server/db";
 import {
-	account,
 	adminProfile,
 	dosenProfile,
 	fakultas,
 	jurusan,
+	mataKuliah,
 	pegawaiProfile,
+	semester,
 	user,
 } from "@/server/db/schema";
 
-const scryptConfig = {
-	N: 16384,
-	r: 16,
-	p: 1,
-	dkLen: 64,
-};
-
-async function hashPassword(password: string): Promise<string> {
-	const salt = bytesToHex(randomBytes(16));
-	const key = await scryptAsync(password.normalize("NFKC"), salt, {
-		N: scryptConfig.N,
-		r: scryptConfig.r,
-		p: scryptConfig.p,
-		dkLen: scryptConfig.dkLen,
-		maxmem: 128 * scryptConfig.N * scryptConfig.r * 2,
-	});
-	return `${salt}:${bytesToHex(key)}`;
-}
-
 const seedData = {
 	fakultas: [
-		{ id: crypto.randomUUID(), nama: "Fakultas Teknik" },
-		{ id: crypto.randomUUID(), nama: "Fakultas Ekonomi" },
-		{ id: crypto.randomUUID(), nama: "Fakultas Hukum" },
+		{ id: crypto.randomUUID(), nama: "Fakultas Sains & Teknologi" },
+		{
+			id: crypto.randomUUID(),
+			nama: "Fakultas Management Bisnis & Komunikasi",
+		},
+		{ id: crypto.randomUUID(), nama: "Fakultas Keperawatan" },
 	],
 	jurusan: [
-		{ nama: "Teknik Informatika", fakultasNama: "Fakultas Teknik" },
-		{ nama: "Teknik Sipil", fakultasNama: "Fakultas Teknik" },
-		{ nama: "Manajemen", fakultasNama: "Fakultas Ekonomi" },
-		{ nama: "Akuntansi", fakultasNama: "Fakultas Ekonomi" },
-		{ nama: "Ilmu Hukum", fakultasNama: "Fakultas Hukum" },
+		{ nama: "Teknik Informatika", fakultasNama: "Fakultas Sains & Teknologi" },
+		{ nama: "Teknik Sipil", fakultasNama: "Fakultas Sains & Teknologi" },
+		{
+			nama: "Manajemen",
+			fakultasNama: "Fakultas Management Bisnis & Komunikasi",
+		},
+		{
+			nama: "Akuntansi",
+			fakultasNama: "Fakultas Management Bisnis & Komunikasi",
+		},
+		{ nama: "Ilmu Kesehatan", fakultasNama: "Fakultas Keperawatan" },
 	],
 	users: {
 		admin: {
@@ -53,17 +43,91 @@ const seedData = {
 			name: "Pegawai User",
 			email: "pegawai@praesentia.com",
 			password: "pegawai123",
-			fakultasNama: "Fakultas Teknik",
+			fakultasNama: "Fakultas Sains & Teknologi",
 		},
-		dosen: {
-			name: "Dosen User",
-			email: "dosen@praesentia.com",
-			password: "dosen123",
-			nidn: "0123456789",
-			fakultasNama: "Fakultas Teknik",
-		},
+		dosen: [
+			{
+				name: "Dosen Saintek",
+				email: "dosensaintek@praesentia.com",
+				password: "dosen123",
+				nidn: "0123456781",
+				fakultasNama: "Fakultas Sains & Teknologi",
+			},
+			{
+				name: "Dosen FMBK",
+				email: "dosenfmbk@praesentia.com",
+				password: "dosen123",
+				nidn: "0123456782",
+				fakultasNama: "Fakultas Management Bisnis & Komunikasi",
+			},
+			{
+				name: "Dosen Keperawatan",
+				email: "dosenkeperawatan@praesentia.com",
+				password: "dosen123",
+				nidn: "0123456783",
+				fakultasNama: "Fakultas Keperawatan",
+			},
+		],
 	},
+	semester: [
+		{ id: crypto.randomUUID(), name: "Semester 1" },
+		{ id: crypto.randomUUID(), name: "Semester 2" },
+		{ id: crypto.randomUUID(), name: "Semester 3" },
+		{ id: crypto.randomUUID(), name: "Semester 4" },
+		{ id: crypto.randomUUID(), name: "Semester 5" },
+		{ id: crypto.randomUUID(), name: "Semester 6" },
+		{ id: crypto.randomUUID(), name: "Semester 7" },
+		{ id: crypto.randomUUID(), name: "Semester 8" },
+	],
+	mataKuliah: [
+		{ nama: "Pemrograman Dasar" },
+		{ nama: "Algoritma dan Struktur Data" },
+		{ nama: "Basis Data" },
+		{ nama: "Pemrograman Web" },
+		{ nama: "Jaringan Komputer" },
+	],
 };
+
+const BASE_URL = "http://localhost:3000";
+
+async function getOrCreateUser(
+	email: string,
+	password: string,
+	data: { name: string; role: "admin" | "pegawai" | "dosen" },
+) {
+	const existing = await db.query.user.findFirst({
+		where: eq(user.email, email),
+	});
+	if (existing) return existing;
+
+	const res = await fetch(`${BASE_URL}/api/auth/sign-up/email`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({
+			name: data.name,
+			email,
+			password,
+		}),
+	});
+
+	if (!res.ok) {
+		const error = await res.text();
+		throw new Error(`Failed to create user ${email}: ${error}`);
+	}
+
+	const created = await db.query.user.findFirst({
+		where: eq(user.email, email),
+	});
+
+	if (created) {
+		await db
+			.update(user)
+			.set({ role: data.role, emailVerified: true })
+			.where(eq(user.id, created.id));
+	}
+
+	return created;
+}
 
 async function seed() {
 	console.log("🌱 Starting seed...");
@@ -71,7 +135,8 @@ async function seed() {
 	console.log("📁 Seeding fakultas...");
 	await db.insert(fakultas).values(seedData.fakultas).onConflictDoNothing();
 
-	const fakultasMap = new Map(seedData.fakultas.map((f) => [f.nama, f.id]));
+	const allFakultas = await db.query.fakultas.findMany();
+	const fakultasMap = new Map(allFakultas.map((f) => [f.nama, f.id]));
 
 	console.log("📁 Seeding jurusan...");
 	const jurusanData = seedData.jurusan.map((j) => {
@@ -86,123 +151,90 @@ async function seed() {
 	await db.insert(jurusan).values(jurusanData).onConflictDoNothing();
 
 	console.log("👤 Seeding admin user...");
-	const adminId = crypto.randomUUID();
-	const adminAccountId = crypto.randomUUID();
-	const adminHashedPassword = await hashPassword(seedData.users.admin.password);
-
-	await db
-		.insert(user)
-		.values({
-			id: adminId,
-			name: seedData.users.admin.name,
-			email: seedData.users.admin.email,
-			emailVerified: true,
-			role: "admin",
-		})
-		.onConflictDoNothing();
-
-	await db
-		.insert(account)
-		.values({
-			id: adminAccountId,
-			accountId: adminId,
-			providerId: "credential",
-			userId: adminId,
-			password: adminHashedPassword,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		})
-		.onConflictDoNothing();
-
-	await db
-		.insert(adminProfile)
-		.values({
-			user_id: adminId,
-		})
-		.onConflictDoNothing();
+	const adminUser = await getOrCreateUser(
+		seedData.users.admin.email,
+		seedData.users.admin.password,
+		{ name: seedData.users.admin.name, role: "admin" },
+	);
+	if (adminUser) {
+		await db
+			.insert(adminProfile)
+			.values({ user_id: adminUser.id })
+			.onConflictDoNothing();
+	}
 
 	console.log("👤 Seeding pegawai user...");
-	const pegawaiId = crypto.randomUUID();
-	const pegawaiAccountId = crypto.randomUUID();
-	const pegawaiHashedPassword = await hashPassword(
-		seedData.users.pegawai.password,
-	);
 	const pegawaiFakultasId = fakultasMap.get(
 		seedData.users.pegawai.fakultasNama,
 	);
 	if (!pegawaiFakultasId) throw new Error("Pegawai fakultas not found");
 
-	await db
-		.insert(user)
-		.values({
-			id: pegawaiId,
-			name: seedData.users.pegawai.name,
-			email: seedData.users.pegawai.email,
-			emailVerified: true,
-			role: "pegawai",
-		})
-		.onConflictDoNothing();
+	const pegawaiUser = await getOrCreateUser(
+		seedData.users.pegawai.email,
+		seedData.users.pegawai.password,
+		{ name: seedData.users.pegawai.name, role: "pegawai" },
+	);
+	if (pegawaiUser) {
+		await db
+			.insert(pegawaiProfile)
+			.values({
+				user_id: pegawaiUser.id,
+				fakultas_id: pegawaiFakultasId,
+			})
+			.onConflictDoNothing();
+	}
 
-	await db
-		.insert(account)
-		.values({
-			id: pegawaiAccountId,
-			accountId: pegawaiId,
-			providerId: "credential",
-			userId: pegawaiId,
-			password: pegawaiHashedPassword,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		})
-		.onConflictDoNothing();
+	console.log("👤 Seeding dosen users...");
+	const dosenProfileIds: string[] = [];
 
-	await db
-		.insert(pegawaiProfile)
-		.values({
-			user_id: pegawaiId,
-			fakultas_id: pegawaiFakultasId,
-		})
-		.onConflictDoNothing();
+	for (const dosenData of seedData.users.dosen) {
+		const dosenFakultasId = fakultasMap.get(dosenData.fakultasNama);
+		if (!dosenFakultasId) {
+			console.warn(
+				`Fakultas ${dosenData.fakultasNama} not found, skipping dosen ${dosenData.name}`,
+			);
+			continue;
+		}
 
-	console.log("👤 Seeding dosen user...");
-	const dosenId = crypto.randomUUID();
-	const dosenAccountId = crypto.randomUUID();
-	const dosenHashedPassword = await hashPassword(seedData.users.dosen.password);
-	const dosenFakultasId = fakultasMap.get(seedData.users.dosen.fakultasNama);
-	if (!dosenFakultasId) throw new Error("Dosen fakultas not found");
+		const dosenUser = await getOrCreateUser(
+			dosenData.email,
+			dosenData.password,
+			{ name: dosenData.name, role: "dosen" },
+		);
 
-	await db
-		.insert(user)
-		.values({
-			id: dosenId,
-			name: seedData.users.dosen.name,
-			email: seedData.users.dosen.email,
-			emailVerified: true,
-			role: "dosen",
-		})
-		.onConflictDoNothing();
+		if (dosenUser) {
+			const existingProfile = await db.query.dosenProfile.findFirst({
+				where: eq(dosenProfile.user_id, dosenUser.id),
+			});
 
-	await db
-		.insert(account)
-		.values({
-			id: dosenAccountId,
-			accountId: dosenId,
-			providerId: "credential",
-			userId: dosenId,
-			password: dosenHashedPassword,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		})
-		.onConflictDoNothing();
+			if (existingProfile) {
+				dosenProfileIds.push(existingProfile.id);
+			} else {
+				const [inserted] = await db
+					.insert(dosenProfile)
+					.values({
+						user_id: dosenUser.id,
+						nidn: dosenData.nidn,
+						fakultas_id: dosenFakultasId,
+					})
+					.returning();
+				if (inserted) dosenProfileIds.push(inserted.id);
+			}
+		}
+	}
 
-	await db
-		.insert(dosenProfile)
-		.values({
-			user_id: dosenId,
-			nidn: seedData.users.dosen.nidn,
-			fakultas_id: dosenFakultasId,
-		})
-		.onConflictDoNothing();
+	console.log("📅 Seeding semester...");
+	await db.insert(semester).values(seedData.semester).onConflictDoNothing();
+
+	console.log("📚 Seeding mata kuliah...");
+	if (dosenProfileIds.length > 0) {
+		const mataKuliahData = seedData.mataKuliah.map((m, index) => ({
+			id: crypto.randomUUID(),
+			nama: m.nama,
+			dosen_id: dosenProfileIds[index % dosenProfileIds.length] as string,
+		}));
+		await db.insert(mataKuliah).values(mataKuliahData).onConflictDoNothing();
+	}
 
 	console.log("✅ Seed completed!");
 	console.log("\n📋 Seeded credentials:");
@@ -212,9 +244,10 @@ async function seed() {
 	console.log(
 		`   Pegawai: ${seedData.users.pegawai.email} / ${seedData.users.pegawai.password}`,
 	);
-	console.log(
-		`   Dosen:   ${seedData.users.dosen.email} / ${seedData.users.dosen.password}`,
-	);
+	console.log("   Dosen:");
+	for (const d of seedData.users.dosen) {
+		console.log(`      - ${d.email} / ${d.password}`);
+	}
 
 	process.exit(0);
 }

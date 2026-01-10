@@ -66,8 +66,20 @@ export function KelasTable() {
 				enableColumnFilter: true,
 			},
 			{
+				id: "mata_kuliah",
+				accessorKey: "mata_kuliah",
+				header: ({ column }: { column: Column<Data, unknown> }) => (
+					<DataTableColumnHeader column={column} label="Mata Kuliah" />
+				),
+				cell: ({ row }) => <div>{row.original.mata_kuliah?.nama}</div>,
+				enableColumnFilter: true,
+			},
+			{
 				id: "kode",
 				accessorKey: "kode",
+				header: ({ column }: { column: Column<Data, unknown> }) => (
+					<DataTableColumnHeader column={column} label="Kode Kelas" />
+				),
 				cell: ({ cell }) => (
 					<code className="rounded bg-muted px-2 py-1 font-mono text-sm">
 						{cell.getValue<string>()}

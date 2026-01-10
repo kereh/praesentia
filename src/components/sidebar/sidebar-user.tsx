@@ -1,18 +1,18 @@
 "use client";
 
 import {
-	BadgeCheck,
-	Bell,
-	ChevronsUpDown,
-	LogOut,
-	Settings,
+	// BadgeCheck,
+	// Bell,
+	ChevronsUpDownIcon,
+	LogOutIcon,
+	// Settings,
 } from "lucide-react";
 import { logout } from "@/actions/auth/logout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuGroup,
+	// DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -24,7 +24,7 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
-import type { UserData } from "../navigations/navigation.types";
+import type { Session } from "@/server/better-auth/config";
 
 function getInitials(name: string): string {
 	return name
@@ -35,7 +35,7 @@ function getInitials(name: string): string {
 		.slice(0, 2);
 }
 
-export function SidebarUser({ user }: { user: UserData }) {
+export function SidebarUser({ user }: { user: Session["user"] }) {
 	const { isMobile } = useSidebar();
 
 	return (
@@ -48,7 +48,7 @@ export function SidebarUser({ user }: { user: UserData }) {
 							size="lg"
 						>
 							<Avatar className="size-8 rounded-lg">
-								<AvatarImage alt={user.name} src={user.avatar} />
+								<AvatarImage alt={user.name} src={user.image || ""} />
 								<AvatarFallback className="rounded-lg bg-primary/10 text-primary">
 									{getInitials(user.name)}
 								</AvatarFallback>
@@ -59,7 +59,7 @@ export function SidebarUser({ user }: { user: UserData }) {
 									{user.email}
 								</span>
 							</div>
-							<ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
+							<ChevronsUpDownIcon className="ml-auto size-4 text-muted-foreground" />
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
@@ -71,7 +71,7 @@ export function SidebarUser({ user }: { user: UserData }) {
 						<DropdownMenuLabel className="p-0 font-normal">
 							<div className="flex items-center gap-2 px-2 py-1.5 text-left text-sm">
 								<Avatar className="size-8 rounded-lg">
-									<AvatarImage alt={user.name} src={user.avatar} />
+									<AvatarImage alt={user.name} src={user.image || ""} />
 									<AvatarFallback className="rounded-lg bg-primary/10 text-primary">
 										{getInitials(user.name)}
 									</AvatarFallback>
@@ -85,7 +85,7 @@ export function SidebarUser({ user }: { user: UserData }) {
 							</div>
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
+						{/* <DropdownMenuGroup>
 							<DropdownMenuItem>
 								<BadgeCheck className="mr-2 size-4" />
 								Account
@@ -99,12 +99,12 @@ export function SidebarUser({ user }: { user: UserData }) {
 								Notifications
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
-						<DropdownMenuSeparator />
+						<DropdownMenuSeparator /> */}
 						<DropdownMenuItem
 							className="text-destructive focus:text-destructive"
 							onClick={async () => await logout()}
 						>
-							<LogOut className="mr-2 size-4" />
+							<LogOutIcon className="mr-2 size-4" />
 							Log out
 						</DropdownMenuItem>
 					</DropdownMenuContent>

@@ -1,0 +1,1 @@
+ALTER TABLE "praesentia_mahasiswaProfile" ADD COLUMN "status" varchar DEFAULT 'aktif';

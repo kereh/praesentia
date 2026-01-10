@@ -14,9 +14,3 @@ export type NavItem = {
 export type Role = "admin" | "pegawai" | "dosen" | "mahasiswa";
 
 export type NavConfig = Record<Role, NavItem[]>;
-
-export type UserData = {
-	name: string;
-	email: string;
-	avatar: string;
-};

@@ -64,6 +64,8 @@ CREATE TABLE "praesentia_kelas" (
 	"id" text PRIMARY KEY NOT NULL,
 	"nama" text NOT NULL,
 	"kode" text NOT NULL,
+	"dosen_id" text NOT NULL,
+	"semester_id" text NOT NULL,
 	"mata_kuliah_id" text NOT NULL,
 	"fakultas_id" text NOT NULL,
 	"jurusan_id" text NOT NULL,
@@ -71,6 +73,11 @@ CREATE TABLE "praesentia_kelas" (
 	"updated_at" timestamp with time zone NOT NULL,
 	CONSTRAINT "praesentia_kelas_nama_unique" UNIQUE("nama"),
 	CONSTRAINT "praesentia_kelas_kode_unique" UNIQUE("kode")
+);
+--> statement-breakpoint
+CREATE TABLE "praesentia_mahasiswa_mata_kuliah" (
+	"mahasiswa_id" text NOT NULL,
+	"mata_kuliah_id" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "praesentia_mahasiswaProfile" (
@@ -86,8 +93,11 @@ CREATE TABLE "praesentia_mahasiswaProfile" (
 --> statement-breakpoint
 CREATE TABLE "praesentia_mata_kuliah" (
 	"id" text PRIMARY KEY NOT NULL,
+	"nama" text,
+	"dosen_id" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
-	"updated_at" timestamp with time zone NOT NULL
+	"updated_at" timestamp with time zone NOT NULL,
+	CONSTRAINT "praesentia_mata_kuliah_nama_unique" UNIQUE("nama")
 );
 --> statement-breakpoint
 CREATE TABLE "praesentia_pegawaiProfile" (
@@ -96,6 +106,12 @@ CREATE TABLE "praesentia_pegawaiProfile" (
 	"fakultas_id" text NOT NULL,
 	"created_at" timestamp with time zone NOT NULL,
 	"updated_at" timestamp with time zone NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "praesentia_semester" (
+	"id" text PRIMARY KEY NOT NULL,
+	"name" text,
+	CONSTRAINT "praesentia_semester_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
 CREATE TABLE "praesentia_session" (
@@ -136,12 +152,17 @@ ALTER TABLE "praesentia_adminProfile" ADD CONSTRAINT "praesentia_adminProfile_us
 ALTER TABLE "praesentia_dosenProfile" ADD CONSTRAINT "praesentia_dosenProfile_user_id_praesentia_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."praesentia_user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_dosenProfile" ADD CONSTRAINT "praesentia_dosenProfile_fakultas_id_praesentia_fakultas_id_fk" FOREIGN KEY ("fakultas_id") REFERENCES "public"."praesentia_fakultas"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_jurusan" ADD CONSTRAINT "praesentia_jurusan_fakultas_id_praesentia_fakultas_id_fk" FOREIGN KEY ("fakultas_id") REFERENCES "public"."praesentia_fakultas"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "praesentia_kelas" ADD CONSTRAINT "praesentia_kelas_dosen_id_praesentia_dosenProfile_id_fk" FOREIGN KEY ("dosen_id") REFERENCES "public"."praesentia_dosenProfile"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "praesentia_kelas" ADD CONSTRAINT "praesentia_kelas_semester_id_praesentia_semester_id_fk" FOREIGN KEY ("semester_id") REFERENCES "public"."praesentia_semester"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_kelas" ADD CONSTRAINT "praesentia_kelas_mata_kuliah_id_praesentia_mata_kuliah_id_fk" FOREIGN KEY ("mata_kuliah_id") REFERENCES "public"."praesentia_mata_kuliah"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_kelas" ADD CONSTRAINT "praesentia_kelas_fakultas_id_praesentia_fakultas_id_fk" FOREIGN KEY ("fakultas_id") REFERENCES "public"."praesentia_fakultas"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_kelas" ADD CONSTRAINT "praesentia_kelas_jurusan_id_praesentia_jurusan_id_fk" FOREIGN KEY ("jurusan_id") REFERENCES "public"."praesentia_jurusan"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "praesentia_mahasiswa_mata_kuliah" ADD CONSTRAINT "praesentia_mahasiswa_mata_kuliah_mahasiswa_id_praesentia_mahasiswaProfile_id_fk" FOREIGN KEY ("mahasiswa_id") REFERENCES "public"."praesentia_mahasiswaProfile"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "praesentia_mahasiswa_mata_kuliah" ADD CONSTRAINT "praesentia_mahasiswa_mata_kuliah_mata_kuliah_id_praesentia_mata_kuliah_id_fk" FOREIGN KEY ("mata_kuliah_id") REFERENCES "public"."praesentia_mata_kuliah"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_mahasiswaProfile" ADD CONSTRAINT "praesentia_mahasiswaProfile_user_id_praesentia_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."praesentia_user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_mahasiswaProfile" ADD CONSTRAINT "praesentia_mahasiswaProfile_fakultas_id_praesentia_fakultas_id_fk" FOREIGN KEY ("fakultas_id") REFERENCES "public"."praesentia_fakultas"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_mahasiswaProfile" ADD CONSTRAINT "praesentia_mahasiswaProfile_jurusan_id_praesentia_jurusan_id_fk" FOREIGN KEY ("jurusan_id") REFERENCES "public"."praesentia_jurusan"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "praesentia_mata_kuliah" ADD CONSTRAINT "praesentia_mata_kuliah_dosen_id_praesentia_dosenProfile_id_fk" FOREIGN KEY ("dosen_id") REFERENCES "public"."praesentia_dosenProfile"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_pegawaiProfile" ADD CONSTRAINT "praesentia_pegawaiProfile_user_id_praesentia_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."praesentia_user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_pegawaiProfile" ADD CONSTRAINT "praesentia_pegawaiProfile_fakultas_id_praesentia_fakultas_id_fk" FOREIGN KEY ("fakultas_id") REFERENCES "public"."praesentia_fakultas"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "praesentia_session" ADD CONSTRAINT "praesentia_session_user_id_praesentia_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."praesentia_user"("id") ON DELETE cascade ON UPDATE no action;

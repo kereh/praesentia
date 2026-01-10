@@ -79,6 +79,7 @@ export const mahasiswaProfile = createTable("mahasiswaProfile", (d) => ({
 		.primaryKey()
 		.$defaultFn(() => crypto.randomUUID()),
 	nim: d.varchar("nim", { length: 50 }).notNull().unique(),
+	status: d.varchar("status", { enum: ["aktif", "tidak"] }).default("aktif"),
 	user_id: d
 		.text("user_id")
 		.notNull()
