@@ -47,6 +47,7 @@ function FormSkeleton() {
 
 export function KelasAddForm({ dosenId }: { dosenId: string }) {
 	const router = useRouter();
+
 	const { data: fakultas, isPending: fakultasPending } =
 		api.fakultas.dosen.list.useQuery();
 

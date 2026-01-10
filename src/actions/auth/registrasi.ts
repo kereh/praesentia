@@ -3,7 +3,7 @@
 import type { RegistrasiSchema } from "@/schemas/schema-registrasi";
 import { auth } from "@/server/better-auth";
 import { db } from "@/server/db";
-import { mahasiswaProfile } from "@/server/db/schema";
+import { mahasiswa } from "@/server/db/schema";
 
 type RegistrasiResult = { success: true } | { success: false; error: string };
 
@@ -23,7 +23,7 @@ export async function registrasi(
 
 		const { id } = result.user;
 
-		const profile = await db.insert(mahasiswaProfile).values({
+		const profile = await db.insert(mahasiswa).values({
 			user_id: id,
 			nim,
 			fakultas_id: null,

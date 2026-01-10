@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { setupSchema } from "@/schemas/schema-setup";
 import { createTRPCRouter, mahasiswaProcedure } from "@/server/api/trpc";
-import { mahasiswaProfile } from "@/server/db/schema";
+import { mahasiswa } from "@/server/db/schema";
 
 export const mahasiswaProtectedRouter = createTRPCRouter({
 	setup: mahasiswaProcedure
@@ -10,9 +10,9 @@ export const mahasiswaProtectedRouter = createTRPCRouter({
 			const { mahasiswa_id, ...data } = input;
 
 			return await ctx.db
-				.update(mahasiswaProfile)
+				.update(mahasiswa)
 				.set(data)
-				.where(eq(mahasiswaProfile.user_id, mahasiswa_id))
+				.where(eq(mahasiswa.user_id, mahasiswa_id))
 				.returning();
 		}),
 });

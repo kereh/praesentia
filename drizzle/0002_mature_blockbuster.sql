@@ -1,0 +1,1 @@
+DROP TABLE "praesentia_mahasiswa_mata_kuliah" CASCADE;

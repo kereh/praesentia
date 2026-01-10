@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/server/db";
 import {
-	adminProfile,
-	dosenProfile,
+	admin,
+	dosen,
 	fakultas,
 	jurusan,
 	mataKuliah,
-	pegawaiProfile,
+	pegawai,
 	semester,
 	user,
 } from "@/server/db/schema";
@@ -158,7 +158,7 @@ async function seed() {
 	);
 	if (adminUser) {
 		await db
-			.insert(adminProfile)
+			.insert(admin)
 			.values({ user_id: adminUser.id })
 			.onConflictDoNothing();
 	}
@@ -176,7 +176,7 @@ async function seed() {
 	);
 	if (pegawaiUser) {
 		await db
-			.insert(pegawaiProfile)
+			.insert(pegawai)
 			.values({
 				user_id: pegawaiUser.id,
 				fakultas_id: pegawaiFakultasId,
@@ -203,15 +203,15 @@ async function seed() {
 		);
 
 		if (dosenUser) {
-			const existingProfile = await db.query.dosenProfile.findFirst({
-				where: eq(dosenProfile.user_id, dosenUser.id),
+			const existingDosen = await db.query.dosen.findFirst({
+				where: eq(dosen.user_id, dosenUser.id),
 			});
 
-			if (existingProfile) {
-				dosenProfileIds.push(existingProfile.id);
+			if (existingDosen) {
+				dosenProfileIds.push(existingDosen.id);
 			} else {
 				const [inserted] = await db
-					.insert(dosenProfile)
+					.insert(dosen)
 					.values({
 						user_id: dosenUser.id,
 						nidn: dosenData.nidn,

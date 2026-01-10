@@ -3,7 +3,7 @@ import { pgTableCreator } from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator((name) => `praesentia_${name}`);
 
-export const adminProfile = createTable("adminProfile", (d) => ({
+export const admin = createTable("admin", (d) => ({
 	id: d
 		.text("id")
 		.notNull()
@@ -23,7 +23,7 @@ export const adminProfile = createTable("adminProfile", (d) => ({
 		.notNull(),
 }));
 
-export const pegawaiProfile = createTable("pegawaiProfile", (d) => ({
+export const pegawai = createTable("pegawai", (d) => ({
 	id: d
 		.text("id")
 		.notNull()
@@ -47,7 +47,7 @@ export const pegawaiProfile = createTable("pegawaiProfile", (d) => ({
 		.notNull(),
 }));
 
-export const dosenProfile = createTable("dosenProfile", (d) => ({
+export const dosen = createTable("dosen", (d) => ({
 	id: d
 		.text("id")
 		.notNull()
@@ -72,7 +72,7 @@ export const dosenProfile = createTable("dosenProfile", (d) => ({
 		.notNull(),
 }));
 
-export const mahasiswaProfile = createTable("mahasiswaProfile", (d) => ({
+export const mahasiswa = createTable("mahasiswa", (d) => ({
 	id: d
 		.text("id")
 		.notNull()
@@ -149,7 +149,7 @@ export const kelas = createTable("kelas", (d) => ({
 	dosen_id: d
 		.text("dosen_id")
 		.notNull()
-		.references(() => dosenProfile.id, { onDelete: "cascade" }),
+		.references(() => dosen.id, { onDelete: "cascade" }),
 	semester_id: d
 		.text("semester_id")
 		.notNull()
@@ -186,7 +186,7 @@ export const mataKuliah = createTable("mata_kuliah", (d) => ({
 	dosen_id: d
 		.text("dosen_id")
 		.notNull()
-		.references(() => dosenProfile.id, { onDelete: "cascade" }),
+		.references(() => dosen.id, { onDelete: "cascade" }),
 	createdAt: d
 		.timestamp("created_at", { withTimezone: true })
 		.$defaultFn(() => /* @__PURE__ */ new Date())
@@ -237,20 +237,6 @@ export const semester = createTable("semester", (d) => ({
 		.$defaultFn(() => crypto.randomUUID()),
 	name: d.text("name").unique(),
 }));
-
-export const mahasiswaMataKuliah = createTable(
-	"mahasiswa_mata_kuliah",
-	(d) => ({
-		mahasiswa_id: d
-			.text("mahasiswa_id")
-			.notNull()
-			.references(() => mahasiswaProfile.id),
-		mata_kuliah_id: d
-			.text("mata_kuliah_id")
-			.notNull()
-			.references(() => mataKuliah.id),
-	}),
-);
 
 export const user = createTable("user", (d) => ({
 	id: d.text("id").primaryKey(),
@@ -324,64 +310,57 @@ export const verification = createTable("verification", (d) => ({
 		.$defaultFn(() => /* @__PURE__ */ new Date()),
 }));
 
-export const adminProfileRelations = relations(adminProfile, ({ one }) => ({
+export const adminRelations = relations(admin, ({ one }) => ({
 	user: one(user, {
-		fields: [adminProfile.user_id],
+		fields: [admin.user_id],
 		references: [user.id],
 	}),
 }));
 
-export const pegawaiProfileRelations = relations(pegawaiProfile, ({ one }) => ({
+export const pegawaiRelations = relations(pegawai, ({ one }) => ({
 	user: one(user, {
-		fields: [pegawaiProfile.user_id],
+		fields: [pegawai.user_id],
 		references: [user.id],
 	}),
 	fakultas: one(fakultas, {
-		fields: [pegawaiProfile.fakultas_id],
+		fields: [pegawai.fakultas_id],
 		references: [fakultas.id],
 	}),
 }));
 
-export const dosenProfileRelations = relations(
-	dosenProfile,
-	({ one, many }) => ({
-		user: one(user, {
-			fields: [dosenProfile.user_id],
-			references: [user.id],
-		}),
-		fakultas: one(fakultas, {
-			fields: [dosenProfile.fakultas_id],
-			references: [fakultas.id],
-		}),
-		kelas: many(kelas),
-		matakuliah: many(mataKuliah),
+export const dosenRelations = relations(dosen, ({ one, many }) => ({
+	user: one(user, {
+		fields: [dosen.user_id],
+		references: [user.id],
 	}),
-);
+	fakultas: one(fakultas, {
+		fields: [dosen.fakultas_id],
+		references: [fakultas.id],
+	}),
+	kelas: many(kelas),
+	matakuliah: many(mataKuliah),
+}));
 
-export const mahasiswaProfileRelations = relations(
-	mahasiswaProfile,
-	({ one, many }) => ({
-		user: one(user, {
-			fields: [mahasiswaProfile.user_id],
-			references: [user.id],
-		}),
-		fakultas: one(fakultas, {
-			fields: [mahasiswaProfile.fakultas_id],
-			references: [fakultas.id],
-		}),
-		jurusan: one(jurusan, {
-			fields: [mahasiswaProfile.jurusan_id],
-			references: [jurusan.id],
-		}),
-		mahasiswaMataKuliah: many(mahasiswaMataKuliah),
+export const mahasiswaRelations = relations(mahasiswa, ({ one }) => ({
+	user: one(user, {
+		fields: [mahasiswa.user_id],
+		references: [user.id],
 	}),
-);
+	fakultas: one(fakultas, {
+		fields: [mahasiswa.fakultas_id],
+		references: [fakultas.id],
+	}),
+	jurusan: one(jurusan, {
+		fields: [mahasiswa.jurusan_id],
+		references: [jurusan.id],
+	}),
+}));
 
 export const fakultasRelations = relations(fakultas, ({ many }) => ({
 	jurusan: many(jurusan),
-	pegawai: many(pegawaiProfile),
-	dosen: many(dosenProfile),
-	mahasiswa: many(mahasiswaProfile),
+	pegawai: many(pegawai),
+	dosen: many(dosen),
+	mahasiswa: many(mahasiswa),
 	kelas: many(kelas),
 }));
 
@@ -390,7 +369,7 @@ export const jurusanRelations = relations(jurusan, ({ one, many }) => ({
 		fields: [jurusan.fakultas_id],
 		references: [fakultas.id],
 	}),
-	mahasiswa: many(mahasiswaProfile),
+	mahasiswa: many(mahasiswa),
 	kelas: many(kelas),
 }));
 
@@ -411,55 +390,40 @@ export const kelasRelations = relations(kelas, ({ one }) => ({
 		fields: [kelas.jurusan_id],
 		references: [jurusan.id],
 	}),
-	dosen: one(dosenProfile, {
+	dosen: one(dosen, {
 		fields: [kelas.dosen_id],
-		references: [dosenProfile.id],
+		references: [dosen.id],
 	}),
 }));
 
 export const mataKuliahRelations = relations(mataKuliah, ({ one, many }) => ({
-	dosen: one(dosenProfile, {
+	dosen: one(dosen, {
 		fields: [mataKuliah.dosen_id],
-		references: [dosenProfile.id],
+		references: [dosen.id],
 	}),
 	kelas: many(kelas),
-	mahasiswaMataKuliah: many(mahasiswaMataKuliah),
 }));
 
 export const semesterRelations = relations(semester, ({ many }) => ({
 	kelas: many(kelas),
 }));
 
-export const mahasiswaMataKuliahRelations = relations(
-	mahasiswaMataKuliah,
-	({ one }) => ({
-		mahasiswa: one(mahasiswaProfile, {
-			fields: [mahasiswaMataKuliah.mahasiswa_id],
-			references: [mahasiswaProfile.id],
-		}),
-		mataKuliah: one(mataKuliah, {
-			fields: [mahasiswaMataKuliah.mata_kuliah_id],
-			references: [mataKuliah.id],
-		}),
-	}),
-);
-
 export const userRelations = relations(user, ({ many, one }) => ({
-	admin: one(adminProfile, {
+	admin: one(admin, {
 		fields: [user.id],
-		references: [adminProfile.user_id],
+		references: [admin.user_id],
 	}),
-	pegawai: one(pegawaiProfile, {
+	pegawai: one(pegawai, {
 		fields: [user.id],
-		references: [pegawaiProfile.user_id],
+		references: [pegawai.user_id],
 	}),
-	dosen: one(dosenProfile, {
+	dosen: one(dosen, {
 		fields: [user.id],
-		references: [dosenProfile.user_id],
+		references: [dosen.user_id],
 	}),
-	mahasiswa: one(mahasiswaProfile, {
+	mahasiswa: one(mahasiswa, {
 		fields: [user.id],
-		references: [mahasiswaProfile.user_id],
+		references: [mahasiswa.user_id],
 	}),
 	account: many(account),
 	session: many(session),
